@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pinoHttp from 'pino-http';
 import dotenv from 'dotenv';
+import { connectMongoDB } from './db/connectMongoDB.js';
 
 dotenv.config();
 
@@ -46,4 +47,12 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+// підключення до MongoDB
+await connectMongoDB();
+
+// запуск сервера
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

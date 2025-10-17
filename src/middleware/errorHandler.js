@@ -1,0 +1,6 @@
+export default (err, req, res) => {
+  const status = err.status || 500;
+  res.status(status).json({
+    message: err.message || 'Internal Server Error',
+  });
+};

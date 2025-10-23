@@ -1,9 +1,32 @@
 import Note from '../models/note.js';
+import { TAGS } from '../constants/tags.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find({});
-  res.status(200).json(notes);
+  const page = parseInt(req.query.page) || 1;
+  const perPage = parseInt(req.query.perPage) || 10;
+  const { tag, search } = req.query;
+
+  const filter = {};
+  if (tag && TAGS.includes(tag)) filter.tag = tag;
+  if (search) filter.$text = { $search: search };
+
+  const skip = (page - 1) * perPage;
+
+  const [totalNotes, notes] = await Promise.all([
+    Note.countDocuments(filter),
+    Note.find(filter).skip(skip).limit(perPage).exec(),
+  ]);
+
+  const totalPages = Math.ceil(totalNotes / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
 export const getNoteById = async (req, res, next) => {

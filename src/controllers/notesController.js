@@ -1,14 +1,13 @@
 import Note from '../models/note.js';
-import { TAGS } from '../constants/tags.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const perPage = parseInt(req.query.perPage) || 10;
+  const page = req.query.page || 1;
+  const perPage = req.query.perPage || 10;
   const { tag, search } = req.query;
 
   const filter = {};
-  if (tag && TAGS.includes(tag)) filter.tag = tag;
+  if (tag) filter.tag = tag;
   if (search) filter.$text = { $search: search };
 
   const skip = (page - 1) * perPage;

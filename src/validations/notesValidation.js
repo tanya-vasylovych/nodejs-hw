@@ -24,21 +24,34 @@ export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).required(),
     content: Joi.string().allow(''),
-    tag: Joi.string()
-      .valid(...TAGS)
-      .required(),
+    tag: Joi.string().valid(...TAGS),
   }),
+};
+
+const isValidObjectIdCustom = (value, helpers) => {
+  if (!isValidObjectId(value)) {
+    return helpers.error('any.invalid');
+  }
+  return value;
 };
 
 export const updateNoteSchema = {
   [Segments.PARAMS]: Joi.object().keys({
-    noteId: Joi.string().custom(isValidObjectId).required(),
+    noteId: Joi.string().custom(isValidObjectIdCustom).required().messages({
+      'any.invalid': 'Invalid noteId format',
+      'any.required': 'noteId is required',
+    }),
   }),
-  [Segments.BODY]: Joi.object().keys({
-    title: Joi.string().min(1).optional(),
-    content: Joi.string().allow('').optional(),
-    tag: Joi.string()
-      .valid(...TAGS)
-      .optional(),
-  }),
+  [Segments.BODY]: Joi.object()
+    .keys({
+      title: Joi.string().min(1).optional(),
+      content: Joi.string().allow('').optional(),
+      tag: Joi.string()
+        .valid(...TAGS)
+        .optional(),
+    })
+    .min(1)
+    .messages({
+      'object.min': 'At least one of title, content, or tag must be provided',
+    }),
 };

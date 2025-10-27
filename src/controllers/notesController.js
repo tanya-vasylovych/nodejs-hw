@@ -2,8 +2,8 @@ import Note from '../models/note.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
-  const page = req.query.page || 1;
-  const perPage = req.query.perPage || 10;
+  const page = req.query.page;
+  const perPage = req.query.perPage;
   const { tag, search } = req.query;
 
   const filter = {};
@@ -54,7 +54,7 @@ export const deleteNote = async (req, res, next) => {
 
 export const updateNote = async (req, res, next) => {
   const { noteId } = req.params;
-  const updatedNote = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
+  const updatedNote = await Note.findByIdAndUpdate(noteId, req.body, {
     new: true,
   });
   if (!updatedNote) {

@@ -3,8 +3,12 @@ import { isValidObjectId } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
 const objectIdValidator = (value, helpers) => {
-  return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
+  if (!isValidObjectId(value)) {
+    return helpers.message('Invalid noteId format');
+  }
+  return value;
 };
+
 export const getAllNotesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),

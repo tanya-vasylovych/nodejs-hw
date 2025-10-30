@@ -31,9 +31,9 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.methods.toJSON = function () {
-  const userObject = this.toObject();
-  delete userObject.password;
-  return userObject;
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
 };
 
 export const User = model('User', userSchema);

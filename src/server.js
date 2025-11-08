@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
+import userRoutes from './routes/userRoutes.js';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
 import logger from './middleware/logger.js';
@@ -25,6 +26,7 @@ await connectMongoDB()
 
     app.use(notesRoutes);
     app.use(authRoutes);
+    app.use(userRoutes);
 
     app.use(notFoundHandler);
     app.use(errors());

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { errors } from 'celebrate';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
 import logger from './middleware/logger.js';
@@ -10,29 +11,6 @@ import notesRoutes from './routes/notesRoutes.js';
 
 dotenv.config();
 const app = express();
-
-// const PORT = process.env.PORT || 3000;
-
-// app.use(logger);
-
-// app.use(cors());
-
-// app.use(express.json());
-
-// app.use('/notes', notesRoutes);
-
-// app.get('/notes', (req, res) => {
-//   res.status(200).json({
-//     message: 'Retrieved all notes',
-//   });
-// });
-
-// app.get('/notes/:noteId', (req, res) => {
-//   const noteId = req.params.noteId;
-//   res.status(200).json({
-//     message: `Retrieved note with ID: ${noteId}`,
-//   });
-// });
 
 await connectMongoDB()
   .then(() => {
@@ -45,7 +23,7 @@ await connectMongoDB()
     app.use(notesRoutes);
 
     app.use(notFoundHandler);
-
+    app.use(errors());
     app.use(errorHandler);
 
     const PORT = process.env.PORT || 3000;
